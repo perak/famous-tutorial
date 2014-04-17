@@ -1,0 +1,89 @@
+@import "/packages/bootstrap3-less/bootstrap.import.less";
+
+
+// variables
+
+@footer_height: 60px;
+
+
+html,
+body {
+  height: 100%;
+}
+
+html {
+	overflow: visible;
+}
+
+body {
+	position: static;
+	overflow: auto;
+}
+
+#wrap {
+  min-height: 100%;
+  height: auto;
+  margin: 0 auto (@footer_height * -1);
+  padding: 0 0 @footer_height;
+}
+
+#footer {
+  height: @footer_height;
+  background-color: #f5f5f5;
+}
+
+#wrap > .container {
+  padding: 60px 15px 0;
+}
+
+.container .text-muted {
+  margin: 20px 0;
+}
+
+p {
+	font-size: 16px;
+}
+
+
+
+.account-form {
+	max-width: 400px;
+	padding: 15px;
+	margin: 0 auto;
+}
+
+.account-form .form-control {
+	margin-bottom: 15px;
+	height: 42px;
+	padding: 10px 10px;
+	font-size: 16px;
+}
+
+.account-form-text-after {
+	margin-top: 10px;
+	font-size: 14px;
+}
+
+.accounts-info-box {
+	max-width: 400px;
+	padding: 15px;
+	margin: 0 auto;	
+}
+
+
+.td-icon {
+	width: 30px;
+}
+
+.td-icon .fa {
+	cursor: pointer;
+	color: @text-muted;
+}
+
+.td-icon .fa:hover {
+	color: @text-color;
+}
+
+#example-container {
+	min-height: 400px; 
+}

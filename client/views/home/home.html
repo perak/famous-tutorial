@@ -1,0 +1,220 @@
+<template name="Home">
+<div class="markdown">
+{{#markdown}}
+
+Famo.us - Quick start guide
+===========================
+
+Context
+-------
+
+Context is root of render tree. A Context has no visual representation, it merely provides a starting point for Famo.us' render cycle. When you create instance of Context object, new `div` is added into document `body`.
+
+	var Engine = require("famous/core/Engine");
+
+	var context = Engine.createContext();
+
+Also, you can specify HTML element in which context will be inserted:
+
+	require("famous-polyfills");
+	require("famous/core/famous");
+	var Engine = require("famous/core/Engine");
+
+	var destElement = document.getElementById("some-element-id");
+	var context = Engine.createContext(destElement);
+
+Note that you can add multiple contexts into document. 
+
+Nodes of render tree are renderables and modifiers:
+
+- **Renderable** is visible element, surface that can be rendered and shown.
+- **Modifier** tells engine how to render surface - its position, angle etc.
+
+Renderables (surfaces)
+----------------------
+
+Renderables are nodes that get drawn to the screen. All surfaces can take in arbitrary HTML content and CSS styling.
+
+	var Engine = require("famous/core/Engine");
+	var Surface = require("famous/core/Surface");
+
+	var context = Engine.createContext();
+
+	var surface = new Surface({ 
+		content: "I am surface!",
+		size: [100, 100],
+		properties: { 
+			backgroundColor: 'orange'
+		} 
+	});
+
+	context.add(surface);
+
+In this example, simple surface is added into context. Parameters passed to Surface constructor are optional and can be:
+
+- **content** (String) inner (HTML) content of surface.
+- **size** (Array) [width, height] in pixels
+- **classes** (Array) CSS classes to set on inner content
+- **properties** (Object) string dictionary of HTML attributes to set on target div
+
+Surface itself doesn't know it's position, angle etc. this is responsibility of modifiers.
+
+
+Modifiers
+---------
+
+Modifier tells engine how to render surfaces **below it** in the render tree. They can modify surface transform (position), opacity, origin and size.
+
+	var Engine = require("famous/core/Engine");
+	var Modifier = require("famous/core/Modifier");
+	var Surface = require("famous/core/Surface");
+
+	var context = Engine.createContext();
+
+	var modifier = new Modifier({ 
+		origin: [0.5, 0.5] 
+	});
+
+	var surface = new Surface({ 
+		size: [100, 100], 
+		properties: { 
+			backgroundColor: 'orange'
+		} 
+	});
+
+	context.add(modifier).add(surface);
+
+In this example, modifier is added into context before surface, into the same branch. This modifier sets surface origin to center of parent (in this case context, which means center of page).
+
+Parameters passed to Modifier constructor are optional and can be:
+
+- **transform** (Object of type Transform) overrides of default options transform (optional)Transformaffine transformation matrix
+- **opacity** (Number) 0..1
+- **origin** (Array) [x, y] origin adjustment in pixels
+- **size** (Array) [w, h] size to apply do descendants
+
+Adding nodes to render tree: chaining and branching
+---------------------------------------------------
+
+Nodes (renderables and modifiers) can be added to tree (context) via the `.add()` method. Add method returns relative node object which is used for chaining and branching.
+By chaining Modifiers, their effects compound: their transforms are composed, and their opacities are multiplied. This makes separating state easy to do. One modifier can handle opacity, another, rotation.
+Example of chaining nodes:
+
+	var Engine = require("famous/core/Engine");
+	var Modifier = require("famous/core/Modifier");
+	var Surface = require("famous/core/Surface");
+	var Transform = require("famous/core/Transform");
+
+	var context = Engine.createContext();
+
+	var modifier1 = new Modifier({ 
+		origin: [0.5, 0.5] 
+	});
+
+	var modifier2 = new Modifier({ 
+		transform : Transform.translate(50, 50)
+	});
+
+	var surface1 = new Surface({ 
+		size: [100, 100], 
+		properties: { 
+			backgroundColor: 'orange'
+		} 
+	});
+
+	context.add(modifier1).add(modifier2).add(surface1);
+
+Modifiers and surfaces also can be added one by one with the same effect:
+
+	var level1 = context.add(modifier1);
+	var level2 = level1.add(modifier2);
+	var level3 = level2.add(surface);
+
+In both example, effect is tree that looks like this:
+
+		context      <-- root
+		   |
+		modifier1    <-- level 1
+		   |
+		modifier2    <-- level 2
+		   |
+		surface1     <-- level 3
+
+
+Note: If you first add surface to render tree, and then you add modifier below, that modifier doesn't have effect on that surface.
+Modifiers have effect only to surfaces that are added below it in the render tree.
+
+To add branch to our tree, use node object returned by `.add()` method and add modifiers and surfaces into that node.
+
+Let's add new surface into new branch starting at level 1:
+
+	var Engine = require("famous/core/Engine");
+	var Modifier = require("famous/core/Modifier");
+	var Surface = require("famous/core/Surface");
+	var Transform = require("famous/core/Transform");
+
+	var context = Engine.createContext();
+
+	var modifier1 = new Modifier({ 
+		origin: [0.5, 0.5] 
+	});
+
+	var modifier2 = new Modifier({ 
+		transform : Transform.translate(-50, -50)
+	});
+
+	var modifier3 = new Modifier({ 
+		transform : Transform.translate(50, 50)
+	});
+
+	var surface1 = new Surface({
+		content: "Surface 1", 
+		size: [100, 100], 
+		properties: { 
+			backgroundColor: 'orange'
+		} 
+	});
+
+	var surface2 = new Surface({ 
+		content: "Surface 2",
+		size: [100, 100], 
+		properties: { 
+			backgroundColor: 'red'
+		} 
+	});
+
+	var level1 = context.add(modifier1);
+
+	var level2_branch1 = level1.add(modifier2);
+	var level3_branch1 = level2_branch1.add(surface1);
+
+	var level2_branch2 = level1.add(modifier3);
+	var level3_branch2 = level2_branch2.add(surface2);
+
+Resulting tree looks like this:
+
+		         context              <-- root
+		            |
+		        modifier1             <-- level 1
+		            |
+		   |-----------------|
+		   |                 |
+		modifier2         modifier3   <-- level 2
+		   |                 |
+		surface1          surface2    <-- level 3
+
+If you want to transform all surfaces then apply transformation to `modifier1`. 
+For example, to rotate all surfaces:
+
+	modifier1.setTransform(Transform.rotateZ(1));
+
+If you want to transform only `surface2` than apply transformation to `modifier3`:
+
+	modifier3.setTransform(Transform.rotateZ(1));
+
+To be continued...
+------------------
+
+{{/markdown}}
+</div>
+</template>

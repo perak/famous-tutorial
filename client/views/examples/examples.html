@@ -1,0 +1,58 @@
+	<template name="Examples">
+		<div class="row" id="content">
+		</div>
+		<div class="row">
+			<div id="menu" class="col-sm-3 col-md-2">
+				{{> ExamplesSideMenu}}
+			</div>
+			<div id="subcontent" class="col-sm-9 col-md-10">
+				{{> yield region='ExamplesSubcontent'}}
+			</div>
+		</div>
+	</template>
+
+	<template name="ExamplesSideMenu">
+		<ul id="menu" class="nav nav-pills nav-stacked">
+			<li id="menu-item" class="{{menuItemClass 'examples.example1'}}">
+				<a href="{{pathFor 'examples.example1'}}">
+					Example 1
+				</a>
+			</li>
+			<li id="menu-item" class="{{menuItemClass 'examples.example2'}}">
+				<a href="{{pathFor 'examples.example2'}}">
+					Example 2
+				</a>
+			</li>
+			<li id="menu-item" class="{{menuItemClass 'examples.example3'}}">
+				<a href="{{pathFor 'examples.example3'}}">
+					Example 3
+				</a>
+			</li>
+			<li id="menu-item" class="{{menuItemClass 'examples.example4'}}">
+				<a href="{{pathFor 'examples.example4'}}">
+					Example 4
+				</a>
+			</li>
+			<li id="menu-item" class="{{menuItemClass 'examples.example5'}}">
+				<a href="{{pathFor 'examples.example5'}}">
+					Example 5
+				</a>
+			</li>
+			<li id="menu-item" class="{{menuItemClass 'examples.example6'}}">
+				<a href="{{pathFor 'examples.example6'}}">
+					Example 6
+				</a>
+			</li>
+			<li id="menu-item" class="{{menuItemClass 'examples.example7'}}">
+				<a href="{{pathFor 'examples.example7'}}">
+					Example 7
+				</a>
+			</li>
+			<li id="menu-item" class="{{menuItemClass 'examples.example8'}}">
+				<a href="{{pathFor 'examples.example8'}}">
+					Example 8
+				</a>
+			</li>
+		</ul>
+	</template>
+

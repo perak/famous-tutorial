@@ -1,0 +1,9 @@
+{
+  "packages": {
+    "iron-router": {},
+    "bootstrap3-less": {},
+    "font-awesome": {},
+    "meteor-markdown": {},
+    "famono": {}
+  }
+}
