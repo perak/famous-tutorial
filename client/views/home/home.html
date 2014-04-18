@@ -46,7 +46,7 @@ Renderables are nodes that get drawn to the screen. All surfaces can take in arb
 	var context = Engine.createContext();
 
 	var surface = new Surface({ 
-		content: "I am surface!",
+		content: "Hello!",
 		size: [100, 100],
 		properties: {
 			lineHeight: "100px",
@@ -85,6 +85,7 @@ Modifier tells engine how to render surfaces **below it** in the render tree. Th
 	});
 
 	var surface = new Surface({ 
+		content: "Hello!", 
 		size: [100, 100], 
 		properties: { 
 			lineHeight: "100px",
@@ -129,6 +130,7 @@ Example of chaining nodes:
 	});
 
 	var surface1 = new Surface({ 
+		content: "Hello!", 
 		size: [100, 100], 
 		properties: { 
 			lineHeight: "100px",
@@ -224,16 +226,64 @@ Resulting tree looks like this:
 		   |                 |
 		surface1          surface2    <-- level 3
 
-If you want to transform all surfaces then apply transformation to `modifier1`. 
+If you want to transform all surfaces, apply transformation to `modifier1`. 
 For example, to rotate all surfaces:
 
 	modifier1.setTransform(Transform.rotateZ(1));
 
-If you want to transform only `surface2` than apply transformation to `modifier3`:
+If you want to transform only `surface2`, apply transformation to `modifier3`:
 
 	modifier3.setTransform(Transform.rotateZ(1));
 
 See **live example** [here]({{pathFor 'examples.example1'}})
+
+Transitions
+-----------
+
+In above examples, changes to modifier are applied immediately. We can control how transition is performed with second parameter to `Modifier.setTransform` (and all other `Modifier.set...` methods).
+
+	modifier.setTransform(Transform.rotateZ(1), { duration: 2000, curve: 'linear' });
+
+- **duration** transition duration in miliseconds
+- **curve** name of predefined transition curve: `linear`, `easeIn`, `easeOut`, `easeInOut`, `easeOutBounce`, and `spring`.
+
+Default curve is 'linear' which means transition will perform by constant rate. Different curves allow transitions to ramp up, slow down, or overshoot, etc.
+
+	require("famous-polyfills"); // Add polyfills
+	require("famous/core/famous"); // Add the default css file
+	var Engine = require("famous/core/Engine");
+	var Modifier = require("famous/core/Modifier");
+	var Surface = require("famous/core/Surface");
+
+	var context = Engine.createContext();
+
+	var modifier = new Modifier({ 
+		origin: [0.5, 0.5],
+		transform : Transform.rotateZ(1)
+	});
+
+	var surface = new Surface({
+		content: "Hello!", 
+		size: [100, 100], 
+		properties: { 
+			lineHeight: "100px",
+			textAlign: "center", 
+			backgroundColor: 'orange'
+		} 
+	});
+
+	context.add(modifier).add(surface);
+
+	modifier.setTransform(Transform.rotateZ(0), { duration: 2000, curve: 'spring' });
+
+As third parameter to `Modifier.setTransform` (and other `Modifier.set...` methods) you can specify callback which will be executed when transition is finished:
+
+	modifier.setTransform(Transform.rotateZ(0), { duration: 2000 }, function() {
+		// do something when transition finishes...
+	});
+
+See **live example** [here]({{pathFor 'examples.example2'}})
+
 
 To be continued...
 ------------------
