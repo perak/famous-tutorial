@@ -8,8 +8,10 @@ Famo.us - Quick start guide
 Context
 -------
 
-Context is root of render tree. A Context has no visual representation, it merely provides a starting point for Famo.us' render cycle. When you create instance of Context object, new `div` is added into document `body`.
+Context is root of render tree. A Context has no visual representation, it merely provides a starting point for Famo.us' render cycle.
 
+	require("famous-polyfills"); // Add polyfills
+	require("famous/core/famous"); // Add the default css file
 	var Engine = require("famous/core/Engine");
 
 	var context = Engine.createContext();
@@ -23,6 +25,7 @@ Also, you can specify HTML element in which context will be inserted:
 	var destElement = document.getElementById("some-element-id");
 	var context = Engine.createContext(destElement);
 
+If you don't specify container element to Context constructor new `div` is added into document `body`.
 Note that you can add multiple contexts into document. 
 
 Nodes of render tree are renderables and modifiers:
@@ -35,6 +38,8 @@ Renderables (surfaces)
 
 Renderables are nodes that get drawn to the screen. All surfaces can take in arbitrary HTML content and CSS styling.
 
+	require("famous-polyfills"); // Add polyfills
+	require("famous/core/famous"); // Add the default css file
 	var Engine = require("famous/core/Engine");
 	var Surface = require("famous/core/Surface");
 
@@ -43,7 +48,9 @@ Renderables are nodes that get drawn to the screen. All surfaces can take in arb
 	var surface = new Surface({ 
 		content: "I am surface!",
 		size: [100, 100],
-		properties: { 
+		properties: {
+			lineHeight: "100px",
+			textAlign: "center", 
 			backgroundColor: 'orange'
 		} 
 	});
@@ -65,6 +72,8 @@ Modifiers
 
 Modifier tells engine how to render surfaces **below it** in the render tree. They can modify surface transform (position), opacity, origin and size.
 
+	require("famous-polyfills"); // Add polyfills
+	require("famous/core/famous"); // Add the default css file
 	var Engine = require("famous/core/Engine");
 	var Modifier = require("famous/core/Modifier");
 	var Surface = require("famous/core/Surface");
@@ -78,6 +87,8 @@ Modifier tells engine how to render surfaces **below it** in the render tree. Th
 	var surface = new Surface({ 
 		size: [100, 100], 
 		properties: { 
+			lineHeight: "100px",
+			textAlign: "center", 
 			backgroundColor: 'orange'
 		} 
 	});
@@ -100,6 +111,8 @@ Nodes (renderables and modifiers) can be added to tree (context) via the `.add()
 By chaining Modifiers, their effects compound: their transforms are composed, and their opacities are multiplied. This makes separating state easy to do. One modifier can handle opacity, another, rotation.
 Example of chaining nodes:
 
+	require("famous-polyfills"); // Add polyfills
+	require("famous/core/famous"); // Add the default css file
 	var Engine = require("famous/core/Engine");
 	var Modifier = require("famous/core/Modifier");
 	var Surface = require("famous/core/Surface");
@@ -118,6 +131,8 @@ Example of chaining nodes:
 	var surface1 = new Surface({ 
 		size: [100, 100], 
 		properties: { 
+			lineHeight: "100px",
+			textAlign: "center", 
 			backgroundColor: 'orange'
 		} 
 	});
@@ -148,6 +163,8 @@ To add branch to our tree, use node object returned by `.add()` method and add m
 
 Let's add new surface into new branch starting at level 1:
 
+	require("famous-polyfills"); // Add polyfills
+	require("famous/core/famous"); // Add the default css file
 	var Engine = require("famous/core/Engine");
 	var Modifier = require("famous/core/Modifier");
 	var Surface = require("famous/core/Surface");
@@ -171,6 +188,8 @@ Let's add new surface into new branch starting at level 1:
 		content: "Surface 1", 
 		size: [100, 100], 
 		properties: { 
+			lineHeight: "100px",
+			textAlign: "center", 
 			backgroundColor: 'orange'
 		} 
 	});
@@ -179,6 +198,8 @@ Let's add new surface into new branch starting at level 1:
 		content: "Surface 2",
 		size: [100, 100], 
 		properties: { 
+			lineHeight: "100px",
+			textAlign: "center", 
 			backgroundColor: 'red'
 		} 
 	});
@@ -211,6 +232,8 @@ For example, to rotate all surfaces:
 If you want to transform only `surface2` than apply transformation to `modifier3`:
 
 	modifier3.setTransform(Transform.rotateZ(1));
+
+See **live example** [here]({{pathFor 'examples.example1'}})
 
 To be continued...
 ------------------

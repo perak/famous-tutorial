@@ -1,4 +1,7 @@
 Template.ExamplesExample1.rendered = function() {
+	require("famous-polyfills"); // Add polyfills
+	require("famous/core/famous"); // Add the default css file
+
 	var Engine = require("famous/core/Engine");
 	var Modifier = require("famous/core/Modifier");
 	var Surface = require("famous/core/Surface");
@@ -23,6 +26,8 @@ Template.ExamplesExample1.rendered = function() {
 		content: "Surface 1",
 		size: [100, 100], 
 		properties: { 
+			lineHeight: "100px",
+			textAlign: "center", 
 			backgroundColor: 'orange'
 		} 
 	});
@@ -31,6 +36,8 @@ Template.ExamplesExample1.rendered = function() {
 		content: "Surface 2",
 		size: [100, 100], 
 		properties: { 
+			lineHeight: "100px",
+			textAlign: "center", 
 			backgroundColor: 'red'
 		} 
 	});
