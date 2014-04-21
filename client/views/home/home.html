@@ -5,10 +5,14 @@
 Famo.us - Quick start guide
 ===========================
 
+What is Famo.us?
+----------------
+Famo.us is a free, open source JavaScript rendering and physics engine that empowers developers to build beautiful, performant apps for any device. No plugins. No third-party libraries. Just unbreakable 60 frames per second animation of hundreds of 3D surfaces with physics.
+
 Context
 -------
 
-Context is root of render tree. A Context has no visual representation, it merely provides a starting point for Famo.us' render cycle.
+Context is root of famo.us render tree. A Context has no visual representation, it merely provides a starting point for Famo.us' render cycle.
 
 	require("famous-polyfills"); // Add polyfills
 	require("famous/core/famous"); // Add the default css file
@@ -245,7 +249,7 @@ In above examples, changes to modifier are applied immediately. We can control h
 	modifier.setTransform(Transform.rotateZ(1), { duration: 2000, curve: 'linear' });
 
 - **duration** transition duration in miliseconds
-- **curve** name of predefined transition curve: `linear`, `easeIn`, `easeOut`, `easeInOut`, `easeOutBounce`, and `spring`.
+- **curve** name of predefined transition curve. There is six default curves: `linear`, `easeIn`, `easeOut`, `easeInOut`, `easeOutBounce`, and `spring`.
 
 Default curve is 'linear' which means transition will perform by constant rate. Different curves allow transitions to ramp up, slow down, or overshoot, etc.
 
@@ -285,6 +289,57 @@ As third parameter to `Modifier.setTransform` (and other `Modifier.set...` metho
 See **live example** [here]({{pathFor 'examples.example2'}})
 
 
+Physics Transitions
+-------------------
+Physics transitions doesn't have duration; instead, you define the physical parameters of the transitions. Transition will oscillate with optional damping ratio. If you specify damping ratio of 0, transition will oscillate forever.
+
+	modifier.setTransform(Transform.rotate(1, 1, 1), { method: SpringTransition, period: 2000, dampingRatio: 0.1, velocity: 0 });
+
+- **method** key is a user-defined string that tells Famo.us which physics transition you're using.
+- **period** key denotes the period of a spring, which is the amount of time for a complete back and forth cycle when there is no damping.
+- **dampingRatio** key is a number between 0 and 1 that introduces damping into the motion. For dampingRatio = 0, the spring motion with oscillate forever, and when dampingRatio = 1, the spring motion will not oscillate at all, and come to a gentle halt.
+
+There are several physics transitions: SpringTransition, WallTransition, SnapTransition
+
+	require("famous-polyfills"); // Add polyfills
+	require("famous/core/famous"); // Add the default css file
+	var Engine = require("famous/core/Engine");
+	var Modifier = require("famous/core/Modifier");
+	var Surface = require("famous/core/Surface");
+	var Transform = require("famous/core/Transform");
+    var SpringTransition = require("famous/transitions/SpringTransition");
+
+	var context = Engine.createContext();
+
+	var surface = new Surface({
+		size:[100,100],
+		content: 'Hello!',
+		size: [100, 100], 
+		properties: { 
+			lineHeight: "100px",
+			textAlign: "center", 
+			backgroundColor: 'orange'
+		}
+	});
+
+	var modifier = new Modifier({
+		origin: [.5,.5],
+		transform: Transform.rotate(1, 1, 1)
+	});
+
+	var transition = {
+		method: SpringTransition,
+		period: 2000,
+		dampingRatio: 0.1,
+		velocity: 0
+	}
+
+	modifier.setTransform(Transform.rotate(0,0,0), transition);
+	context.add(modifier).add(surface);
+
+See **live example** [here]({{pathFor 'examples.example3'}})
+
+
 Events
 ------
 
@@ -294,7 +349,9 @@ Surface has `.on()` method which allows you to subscribe to DOM event and execut
 		// do something on click...
 	});
 
-See **live example** [here]({{pathFor 'examples.example3'}})
+See **live example** [here]({{pathFor 'examples.example4'}})
+
+
 
 
 To be continued...

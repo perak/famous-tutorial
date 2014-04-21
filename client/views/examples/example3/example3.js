@@ -5,34 +5,36 @@ Template.ExamplesExample3.rendered = function() {
 	var Modifier = require("famous/core/Modifier");
 	var Surface = require("famous/core/Surface");
 	var Transform = require("famous/core/Transform");
+    var SpringTransition = require("famous/transitions/SpringTransition");
 
 	var destNode = document.getElementById("example-container") || undefined;
 	var context = Engine.createContext(destNode);
 
-	var modifier = new Modifier({ 
-		origin: [0.5, 0.5]
-	});
-
 	var surface = new Surface({
-		content: "Click Me!", 
+		size:[100,100],
+		content: 'Hello!',
 		size: [100, 100], 
 		properties: { 
 			lineHeight: "100px",
 			textAlign: "center", 
 			backgroundColor: 'orange'
-		} 
+		}
 	});
 
+	var modifier = new Modifier({
+		origin: [.5,.5],
+		transform: Transform.rotate(1, 1, 1)
+	});
+
+	var transition = {
+		method: SpringTransition,
+		period: 2000,
+		dampingRatio: 0.1,
+		velocity: 0
+	}
+
+	modifier.setTransform(Transform.rotate(0,0,0), transition);
 	context.add(modifier).add(surface);
-
-	surface.on("click", function() {
-		surface.setContent("Oh no!");
-		modifier.setTransform(Transform.rotate(0, 0, Math.PI), { duration: 500, curve: 'easeOut' }, function() {
-			modifier.setTransform(Transform.rotate(0, 0, 0), { duration: 500, curve: 'easeIn' }, function() {
-				surface.setContent("Click Me!");
-			});
-		});
-	});
 }
 
 Template.ExamplesExample3.events({
