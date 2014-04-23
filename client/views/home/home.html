@@ -104,7 +104,7 @@ In this example, modifier is added into context before surface, into the same br
 
 Parameters passed to Modifier constructor are optional and can be:
 
-- **transform** (Object of type Transform) overrides of default options transform (optional)Transformaffine transformation matrix
+- **transform** (Object of type Transform) sets position, rotation angle etc.
 - **opacity** (Number) 0..1
 - **origin** (Array) [x, y] origin adjustment in pixels
 - **size** (Array) [w, h] size to apply do descendants
@@ -352,7 +352,60 @@ Surface has `.on()` method which allows you to subscribe to DOM event and execut
 See **live example** [here]({{pathFor 'examples.example4'}})
 
 
+Views
+-----
+Renderables (surfaces) and modifiers can be encapsulated into containers called views. Views can be added into context (no different from a Surface or Modifier).
 
+There are several types of views:
+
+- **Deck** is a SequentialLayout that can be open and closed with defined animations.
+- **EdgeSwapper** is a container which handles swapping renderables from the edge of its parent context.
+- **GridLayout** is a layout which divides a context into several evenly-sized grid cells.
+- **HeaderFooterLayout** is a layout which will arrange three renderables into a header and footer area of defined size and a content area of flexible size.
+- **RenderController** is a dynamic view that can show or hide different renerables with transitions.
+- **ScrollView** will lay out a collection of renderables sequentially in the specified direction, and will allow you to scroll through them with mousewheel or touch events.
+- **SequentialLayout** will lay out a collection of renderables sequentially in the specified direction.
+
+
+`sequenceFrom` method sets the collection of renderables under the Scrollview instance's control. You can pass array of items or ViewSequence object.
+
+	require("famous-polyfills"); // Add polyfills
+	require("famous/core/famous"); // Add the default css file
+
+	var Engine     = require("famous/core/Engine");
+	var Surface    = require("famous/core/Surface");
+	var Scrollview = require("famous/views/Scrollview");
+
+	var context = Engine.createContext();
+
+	var surfaces = [];
+
+	// create 100 surfaces and add them into array
+	for (var i = 0; i < 100; i++) {
+		var temp = new Surface({
+			content: "Surface: " + (i + 1),
+			size: [undefined, 100],
+			properties: {
+				backgroundColor: "hsl(" + (i * 360 / 40) + ", 100%, 50%)",
+				lineHeight: "100px",
+				textAlign: "center"
+			}
+		});
+
+		temp.pipe(scrollview);
+		surfaces.push(temp);
+	}
+
+	// create ScrollView
+	var scrollview = new Scrollview();
+
+	// add array of surfaces into ScrollView
+	scrollview.sequenceFrom(surfaces);
+
+	// add ScrollView into context
+	context.add(scrollview);
+
+See **live example** [here]({{pathFor 'examples.example5'}})
 
 To be continued...
 ------------------
