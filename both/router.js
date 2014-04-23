@@ -11,6 +11,7 @@ RouteController.prototype.layoutTemplate = 'layout';
 
 Router.map(function () {
 	this.route('home', {path: '/', controller: 'HomeController'});
+	this.route('meteor', {path: '/meteor', controller: 'MeteorController'});
 	this.route('examples', {path: '/examples', controller: 'ExamplesController'});
 	this.route('examples.example1', {path: '/examples/example1', controller: 'ExamplesExample1Controller'});
 	this.route('examples.example2', {path: '/examples/example2', controller: 'ExamplesExample2Controller'});
