@@ -2,8 +2,8 @@
 <div class="markdown">
 {{#markdown}}
 
-Meteor integration
-==================
+Meteor + Famo.us
+================
 
 Package
 -------
@@ -14,8 +14,99 @@ Install it by typing:
 
 	mrt add famono
 
-Requires `Meteor`, `Meteorite` and of course `git`.
+Requires `Meteor`, `Meteorite` and `git`.
 
+Where to put Famo.us code
+-------------------------
+
+Famo.us code should be put in client scope only (into `client` subdir or inside `if(Meteor.isClient()) { ... }` ).
+
+If your Famo.us context will be inside existing html element contained in some `<template name="Foo">` then you should put initialization code into `Template.Foo.rendered = function() { ... }`
+
+	Template.Foo.rendered = function() {
+		var Engine = require("famous/core/Engine");
+
+		var destNode = document.getElementById("example-container") || undefined;
+		var context = Engine.createContext(destNode);
+	}
+
+
+CSS troubles
+------------
+
+Famo.us comes with famous.css file which will set appropriate styles to elements it automaticaly creates (container, group, surface etc.)
+
+To use default famo.us styles just include:
+
+	require("famous/core/famous"); // Add the default css file
+
+
+**Problem** is that default css file also modifies `<html>` and `<body>` element and you will have trouble if your application doesn't use famo.us full screen: your page will not scroll (overflow content will be hidden).
+
+To fix this you can use two methods:
+
+**Method 1** is to add following styles to your custom css:
+
+	html {
+		overflow: visible;
+		position: static;
+	}
+
+	body {
+		overflow: auto;
+		position: static;
+	}
+
+
+**Method 2** is to NOT include famo.us default css and add these styles to your custom css:
+
+	.famous-container, .famous-group {
+	    position: absolute;
+	    top: 0px;
+	    left: 0px;
+	    bottom: 0px;
+	    right: 0px;
+	    overflow: visible;
+	    -webkit-transform-style: preserve-3d;
+	    transform-style: preserve-3d;
+	    -webkit-backface-visibility: visible;
+	    backface-visibility: visible;
+	    pointer-events: none;
+	}
+
+	.famous-group {
+	    width: 0px;
+	    height: 0px;
+	    margin: 0px;
+	    padding: 0px;
+	    -webkit-transform-style: preserve-3d;
+	    transform-style: preserve-3d;
+	}
+
+	.famous-surface {
+	    position: absolute;
+	    -webkit-transform-origin: center center;
+	    transform-origin: center center;
+	    -webkit-backface-visibility: hidden;
+	    backface-visibility: hidden;
+	    -webkit-transform-style: flat;
+	    transform-style: preserve-3d; /* performance */
+	    -webkit-box-sizing: border-box;
+	    -moz-box-sizing: border-box;
+	    -webkit-tap-highlight-color: transparent;
+	    pointer-events: auto;
+	}
+
+	.famous-container-group {
+	    position: relative;
+	    width: 100%;
+	    height: 100%;
+	}
+
+	/* OPTIONAL */
+	.famous-group {
+		position: relative;
+	}
 
 
 To be continued...

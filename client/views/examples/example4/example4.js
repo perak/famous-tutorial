@@ -1,6 +1,6 @@
 Template.ExamplesExample4.rendered = function() {
 	require("famous-polyfills"); // Add polyfills
-	require("famous/core/famous"); // Add the default css file
+
 	var Engine = require("famous/core/Engine");
 	var Modifier = require("famous/core/Modifier");
 	var Surface = require("famous/core/Surface");
